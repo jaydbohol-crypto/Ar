@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowX-MagicStudio AI Art Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6c63ff;
+            --secondary: #ff6b9d;
+            --dark: #0a0e27;
+            --darker: #050716;
+            --light: #f0f0ff;
+            --accent: #00e5ff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Galaxy Animation */
+        #galaxy {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.4;
+        }
+
+        /* Header & Navigation */
+        header {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(108, 99, 255, 0.3);
+            z-index: 100;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
+        }
+
+        .logo-icon {
+            color: var(--accent);
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 8px var(--accent));
+        }
+
+        .dev-info {
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: right;
+        }
+
+        .dev-info a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .dev-info a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: #b8b8ff;
+            line-height: 1.6;
+        }
+
+        /* Generator Section */
+        .generator-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .input-section {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(10, 14, 39, 0.7);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .prompt-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1.2rem;
+            background: rgba(5, 7, 22, 0.8);
+            border: 2px solid rgba(108, 99, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .prompt-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+        }
+
+        /* Stylish Buttons */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), #8a84ff);
+            color: white;
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-examples {
+            background: transparent;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+            box-shadow: 0 0 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .btn-examples:hover {
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: 0 0 25px rgba(255, 107, 157, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-contact {
+            background: linear-gradient(45deg, #ff6b9d, #ff8eb4);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.6);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(108, 99, 255, 0.3);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Result Section */
+        .result-section {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(10, 14, 39, 0.7);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .result-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            min-height: 400px;
+            background: rgba(5, 7, 22, 0.8);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed rgba(108, 99, 255, 0.3);
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .image-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: rgba(108, 99, 255, 0.5);
+        }
+
+        #generatedImage {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(108, 99, 255, 0.2);
+            color: #888;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: #aaa;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .input-section, .result-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Galaxy Animation -->
+    <div id="galaxy"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-magic logo-icon"></i>
+            <h1>ShadowX-MagicStudio</h1>
+        </div>
+        <div class="dev-info">
+            <p>Developed by <strong>selov</strong></p>
+            <p>AI Art Generation Platform</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <section class="hero">
+            <h2>AI ART GENERATOR</h2>
+            <p>Transform your imagination into stunning digital art with our advanced AI. Describe your vision, and watch as ShadowX-MagicStudio brings it to life in seconds.</p>
+        </section>
+
+        <section class="generator-container">
+            <div class="input-section">
+                <h3 style="color: var(--primary); margin-bottom: 1rem; font-family: 'Orbitron', sans-serif;">
+                    <i class="fas fa-paint-brush"></i> DESCRIBE YOUR ART
+                </h3>
+                <textarea id="promptInput" class="prompt-input" placeholder="Describe the art you want to generate... Example: A majestic dragon flying over a neon-lit cyberpunk city at night, digital art, vibrant colors"></textarea>
+                
+                <div class="buttons">
+                    <button id="generateBtn" class="btn btn-primary">
+                        <i class="fas fa-bolt"></i> Generate Art
+                    </button>
+                    <button id="exampleBtn" class="btn btn-examples">
+                        <i class="fas fa-lightbulb"></i> Show Examples
+                    </button>
+                    <button id="clearBtn" class="btn btn-secondary">
+                        <i class="fas fa-broom"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p class="loading-text">AI is creating your masterpiece...</p>
+                <p style="color: #aaa; margin-top: 0.5rem;">This may take up to 30 seconds</p>
+            </div>
+
+            <div class="result-section">
+                <h3><i class="fas fa-image"></i> GENERATED ART</h3>
+                <div class="image-placeholder" id="imagePlaceholder">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Your AI-generated art will appear here</p>
+                </div>
+                <img id="generatedImage" alt="Generated AI Art">
+                <div class="buttons" style="margin-top: 1.5rem;">
+                    <button id="downloadBtn" class="btn btn-primary" style="display: none;">
+                        <i class="fas fa-download"></i> Download Image
+                    </button>
+                    <a href="https://www.facebook.com/quart.hade" target="_blank" class="btn btn-contact">
+                        <i class="fab fa-facebook"></i> Contact Developer
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>ShadowX-MagicStudio AI Art Generator  2026 | Developed by selov</p>
+        <p>Powered by advanced AI algorithms and creative technology</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/quart.hade" target="_blank" title="Facebook">
+                <i class="fab fa-facebook"></i>
+            </a>
+
+        </div>
+    </footer>
+
+    <script>
+        // Create galaxy animation
+        function createGalaxy() {
+            const galaxy = document.getElementById('galaxy');
+            const starCount = 150;
+            const nebulaCount = 5;
+            
+            // Create stars
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                
+                // Random size
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Random brightness and animation delay
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                
+                galaxy.appendChild(star);
+            }
+            
+            // Create nebulas
+            for (let i = 0; i < nebulaCount; i++) {
+                const nebula = document.createElement('div');
+                nebula.classList.add('nebula');
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                nebula.style.left = `${x}%`;
+                nebula.style.top = `${y}%`;
+                
+                // Random size and color
+                const size = Math.random() * 300 + 100;
+                nebula.style.width = `${size}px`;
+                nebula.style.height = `${size}px`;
+                
+                const colors = [
+                    'rgba(108, 99, 255, 0.4)',
+                    'rgba(255, 107, 157, 0.4)',
+                    'rgba(0, 229, 255, 0.4)',
+                    'rgba(155, 81, 224, 0.4)'
+                ];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                nebula.style.backgroundColor = color;
+                
+                galaxy.appendChild(nebula);
+            }
+        }
+        
+        // Example prompts
+        const examplePrompts = [
+            "A majestic dragon flying over a neon-lit cyberpunk city at night, digital art, vibrant colors",
+            "An enchanted forest with glowing mushrooms and fairy creatures, fantasy art, ethereal lighting",
+            "A astronaut floating in space with a galaxy reflected in the helmet, hyperrealistic, cinematic",
+            "A steampunk mechanical elephant walking through a desert, detailed, golden hour lighting",
+            "A serene Japanese garden with cherry blossoms and a koi pond, watercolor style, peaceful",
+            "A futuristic samurai warrior with holographic armor in a rainy neon street, cyberpunk art"
+        ];
+        
+        // DOM Elements
+        const promptInput = document.getElementById('promptInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const generatedImage = document.getElementById('generatedImage');
+        
+        // Event Listeners
+        generateBtn.addEventListener('click', generateArt);
+        exampleBtn.addEventListener('click', showExample);
+        clearBtn.addEventListener('click', clearAll);
+        downloadBtn.addEventListener('click', downloadImage);
+        
+        // Generate AI Art
+        async function generateArt() {
+            const prompt = promptInput.value.trim();
+            
+            if (!prompt) {
+                alert("Please enter a prompt to generate art!");
+                return;
+            }
+            
+            // Show loading indicator
+            loadingIndicator.style.display = 'flex';
+            imagePlaceholder.style.display = 'flex';
+            generatedImage.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            
+            try {
+                // Call your Flask backend
+                const response = await fetch(`/generate?prompt=${encodeURIComponent(prompt)}`);
+                
+                if (response.ok && response.headers.get('content-type').includes('image')) {
+                    // Get image as blob
+                    const imageBlob = await response.blob();
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    
+                    // Display the generated image
+                    generatedImage.src = imageUrl;
+                    generatedImage.style.display = 'block';
+                    imagePlaceholder.style.display = 'none';
+                    downloadBtn.style.display = 'block';
+                    
+                    // Store the blob for downloading
+                    generatedImage.dataset.blobUrl = imageUrl;
+                    
+                    // Scroll to result
+                    generatedImage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`Failed to generate image: ${errorText}`);
+                }
+            } catch (error) {
+                console.error("Error generating art:", error);
+                alert("Failed to generate art. Please try again with a different prompt.");
+            } finally {
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+            }
+        }
+        
+        // Show example prompt
+        function showExample() {
+            const randomPrompt = examplePrompts[Math.floor(Math.random() * examplePrompts.length)];
+            promptInput.value = randomPrompt;
+            
+            // Add a little animation
+            promptInput.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                promptInput.style.transform = 'scale(1)';
+            }, 200);
+        }
+        
+        // Clear all inputs and results
+        function clearAll() {
+            promptInput.value = '';
+            generatedImage.src = '';
+            generatedImage.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            imagePlaceholder.style.display = 'flex';
+            
+            // Clear blob URL if exists
+            if (generatedImage.dataset.blobUrl) {
+                URL.revokeObjectURL(generatedImage.dataset.blobUrl);
+                delete generatedImage.dataset.blobUrl;
+            }
+        }
+        
+        // Download generated image
+        function downloadImage() {
+            if (!generatedImage.dataset.blobUrl) return;
+            
+            const link = document.createElement('a');
+            link.href = generatedImage.dataset.blobUrl;
+            link.download = `shadowx-magicstudio-${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Initialize galaxy animation when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            createGalaxy();
+            
+            // Add some interactive effects to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mousedown', () => {
+                    button.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('mouseup', () => {
+                    button.style.transform = '';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                    button.style.transform = '';
+                });
+            });
+        });
+    </script>
+</body>
+  </html>
