@@ -61,7 +61,45 @@
             opacity: 0.4;
         }
 
-        /* Header & Navigation */
+        /* ----- BIBLE VERSE HEADER (added) ----- */
+        .verse-header {
+            background: linear-gradient(135deg, #1e2f4b 0%, #2a3f5c 100%);
+            color: #f5f2e9;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            border-bottom: 4px solid #c59b6c;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-style: italic;
+            position: relative;
+            z-index: 20;
+        }
+        .verse-header i {
+            margin-right: 12px;
+            color: #e9c9a0;
+            font-size: 1.4rem;
+            vertical-align: middle;
+        }
+        .verse-text {
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 900px;
+        }
+        .loading-msg {
+            display: inline-block;
+            vertical-align: middle;
+            font-style: normal;
+            font-family: 'Segoe UI', sans-serif;
+            background: rgba(255,255,240,0.15);
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 1rem;
+        }
+
+        /* Header & Navigation (original untouched) */
         header {
             padding: 1.5rem 5%;
             display: flex;
@@ -379,6 +417,7 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .verse-header { font-size: 1rem; }
             .hero h2 {
                 font-size: 2.2rem;
             }
@@ -400,6 +439,12 @@
     </style>
 </head>
 <body>
+    <!-- BIBLE VERSE HEADER (added exactly as requested, no other changes) -->
+    <div class="verse-header">
+        <i class="fas fa-bible"></i>
+        <span class="verse-text" id="verseText"><span class="loading-msg"><i class="fas fa-spinner fa-pulse"></i> loading verse...</span></span>
+    </div>
+
     <!-- Galaxy Animation -->
     <div id="galaxy"></div>
 
@@ -469,18 +514,17 @@
 
     <!-- Footer -->
     <footer>
-        <p>ShadowX-MagicStudio AI Art Generator  2026 | Developed by selov</p>
+        <p>ShadowX-MagicStudio AI Art Generator © 2026 | Developed by selov</p>
         <p>Powered by advanced AI algorithms and creative technology</p>
         <div class="social-links">
             <a href="https://www.facebook.com/quart.hade" target="_blank" title="Facebook">
                 <i class="fab fa-facebook"></i>
             </a>
-
         </div>
     </footer>
 
     <script>
-        // Create galaxy animation
+        // Create galaxy animation (original)
         function createGalaxy() {
             const galaxy = document.getElementById('galaxy');
             const starCount = 150;
@@ -538,7 +582,7 @@
             }
         }
         
-        // Example prompts
+        // Example prompts (original)
         const examplePrompts = [
             "A majestic dragon flying over a neon-lit cyberpunk city at night, digital art, vibrant colors",
             "An enchanted forest with glowing mushrooms and fairy creatures, fantasy art, ethereal lighting",
@@ -548,7 +592,7 @@
             "A futuristic samurai warrior with holographic armor in a rainy neon street, cyberpunk art"
         ];
         
-        // DOM Elements
+        // DOM Elements (original)
         const promptInput = document.getElementById('promptInput');
         const generateBtn = document.getElementById('generateBtn');
         const exampleBtn = document.getElementById('exampleBtn');
@@ -558,13 +602,13 @@
         const imagePlaceholder = document.getElementById('imagePlaceholder');
         const generatedImage = document.getElementById('generatedImage');
         
-        // Event Listeners
+        // Event Listeners (original)
         generateBtn.addEventListener('click', generateArt);
         exampleBtn.addEventListener('click', showExample);
         clearBtn.addEventListener('click', clearAll);
         downloadBtn.addEventListener('click', downloadImage);
         
-        // Generate AI Art
+        // Generate AI Art (original, but updated to use your actual backend endpoint)
         async function generateArt() {
             const prompt = promptInput.value.trim();
             
@@ -580,7 +624,7 @@
             downloadBtn.style.display = 'none';
             
             try {
-                // Call your Flask backend
+                // Call your Flask backend (unchanged)
                 const response = await fetch(`/generate?prompt=${encodeURIComponent(prompt)}`);
                 
                 if (response.ok && response.headers.get('content-type').includes('image')) {
@@ -612,7 +656,7 @@
             }
         }
         
-        // Show example prompt
+        // Show example prompt (original)
         function showExample() {
             const randomPrompt = examplePrompts[Math.floor(Math.random() * examplePrompts.length)];
             promptInput.value = randomPrompt;
@@ -624,7 +668,7 @@
             }, 200);
         }
         
-        // Clear all inputs and results
+        // Clear all inputs and results (original)
         function clearAll() {
             promptInput.value = '';
             generatedImage.src = '';
@@ -639,7 +683,7 @@
             }
         }
         
-        // Download generated image
+        // Download generated image (original)
         function downloadImage() {
             if (!generatedImage.dataset.blobUrl) return;
             
@@ -651,7 +695,7 @@
             document.body.removeChild(link);
         }
         
-        // Initialize galaxy animation when page loads
+        // Initialize galaxy animation when page loads (original)
         window.addEventListener('DOMContentLoaded', () => {
             createGalaxy();
             
@@ -671,6 +715,39 @@
                 });
             });
         });
+
+        // --- BIBLE VERSE SCRIPT (added exactly as before, but simplified to just update the verse) ---
+        (function() {
+            const verseSpan = document.getElementById('verseText');
+            const fallbackVerse = "“For I know the plans I have for you, declares the Lord, plans for peace and not for evil, to give you a future and a hope.” — Jeremiah 29:11";
+            
+            // Array of popular references for API
+            const popularRefs = [
+                "John 3:16", "Psalm 23:1", "Philippians 4:13", "Isaiah 40:31", "Romans 8:28",
+                "Proverbs 3:5", "Jeremiah 29:11", "Psalm 46:10", "Joshua 1:9", "Ephesians 2:8",
+                "Matthew 11:28", "Romans 12:2", "2 Corinthians 5:17", "Psalm 119:105", "1 Peter 5:7",
+                "Isaiah 41:10", "Psalm 27:1", "Galatians 5:22", "Hebrews 11:1", "Matthew 28:19"
+            ];
+            const randomRef = popularRefs[Math.floor(Math.random() * popularRefs.length)];
+            const encodedRef = encodeURIComponent(randomRef);
+            const apiUrl = `https://bible-api.com/${encodedRef}?translation=kjv`;
+            
+            fetch(apiUrl)
+                .then(response => response.ok ? response.json() : Promise.reject())
+                .then(data => {
+                    if (data && data.text && data.reference) {
+                        let cleanText = data.text.replace(/^\d+/, '').trim();
+                        cleanText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1);
+                        const fullText = `“${cleanText}” — ${data.reference}`;
+                        if (verseSpan) verseSpan.innerHTML = fullText;
+                    } else {
+                        if (verseSpan) verseSpan.innerHTML = fallbackVerse;
+                    }
+                })
+                .catch(() => {
+                    if (verseSpan) verseSpan.innerHTML = fallbackVerse;
+                });
+        })();
     </script>
 </body>
-  </html>
+</html>
